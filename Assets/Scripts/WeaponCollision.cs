@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 
-
- [System.Serializable]
- public class WeaponCollisionEvent : UnityEvent<GameObject, Transform>{}
-
-
+public delegate void WeaponCollisionEventHandler(object source, WeaponCollisionEventArgs e);
+ 
 public class WeaponCollision : MonoBehaviour
 {
-    //Static OnCollision event, anything that wants to know about a collision would subscribe to this event
-    public WeaponCollisionEvent onCollision = new WeaponCollisionEvent();
+    public event WeaponCollisionEventHandler OnWeaponCollision;
 
     private void OnTriggerEnter(Collider other)
     {      
-        onCollision.Invoke(this.gameObject, other.transform); 
+        if(OnWeaponCollision != null)
+        {
+            //Last Arg is Knockback
+            OnWeaponCollision.Invoke(this, new WeaponCollisionEventArgs(other.transform, GetComponent<DamageController>().GetRandomDamage(), 0));
+        }
     }
 }
