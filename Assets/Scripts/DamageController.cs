@@ -4,26 +4,20 @@ using UnityEngine;
 
 public class DamageController : MonoBehaviour
 {
-    public int minHit = 25;
-    public int maxHit = 50;
+    public int baseHit = 50;
+    public float multiplier = 1f;
+    public float randMinMultiplier = 0.9f;
+    public float randMaxMultiplier = 1.1f;
 
-    public void IncreaseMinimumHit(int amt) {
-        minHit += amt;
+    public void DecreaseBaseHit(int amt) {
+        baseHit -= amt;
     }
 
-    public void IncreaseMaximumHit(int amt) {
-        maxHit += amt;
+    public void IncreaseBaseHit(int amt) {
+        baseHit += amt;
     }
 
-    public void DecreaseMaximumHit(int amt) {
-        maxHit -= amt;
-    }
-
-    public void DecreaseMinimumHit(int amt) {
-        minHit -= amt;
-    }
-
-    public int GetRandomDamage() {
-        return Random.Range(minHit, maxHit);
+    public int GetDamage() {
+        return (int)Mathf.Floor(baseHit * multiplier * Random.Range(randMinMultiplier, randMaxMultiplier));
     }
 }

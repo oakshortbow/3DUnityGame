@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class HealthController : MonoBehaviour
 {
+
     // Start is called before the first frame update
     public int maxHealth = 100;
     public int currHealth;
-    
 
     private void Start()
     {
@@ -15,7 +15,7 @@ public class HealthController : MonoBehaviour
     }
 
 
-    public void TakeDamage(int damage) {
+    public void DecreaseCurrentHealth(int damage) {
         currHealth -= damage;
         if(currHealth < 0) {
             currHealth = 0;
@@ -30,4 +30,7 @@ public class HealthController : MonoBehaviour
         }
         currHealth = amountHealed;       
     }
+
+
+
 }

@@ -59,6 +59,7 @@ public class ThirdPersonPlayerController : MonoBehaviour
         facingAngle.z = 0;
         transform.rotation = Quaternion.Lerp(transform.rotation, facingAngle, turnTime * Time.deltaTime);
         rb.MovePosition(transform.position + (movement * speed * Time.deltaTime));
+        //rb.AddForce(movement * speed, ForceMode.Impulse);
     }
 
     private bool shouldLock() {

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class VisualizeDamageScript : MonoBehaviour
+public class VisualizeDamage : MonoBehaviour
 {
     public TextMeshPro damageNumbers;
     private Camera mainCamera;
 
     void Start()
     {
-        GetComponent<WeaponCollision>().OnWeaponCollision += HandleHit;
+        GetComponent<WeaponCollision>().OnWeaponCollision += VisualizeDamageNumbers;
         mainCamera = Camera.main;
     }
 
-    private void HandleHit(object sender, WeaponCollisionEventArgs args) 
+    private void VisualizeDamageNumbers(object sender, WeaponCollisionEventArgs args) 
     {
             damageNumbers.text = args.Damage.ToString();
             //Instantiating Damage Numbers

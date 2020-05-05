@@ -11,10 +11,19 @@ public class AnimationEventScript : MonoBehaviour
         rb.AddForce(transform.forward * speed, ForceMode.Impulse);
     }
 
-
     public void ToggleCollider() {
         BoxCollider c = weapon.GetComponent<BoxCollider>();
         c.enabled = !c.enabled;
     }
+
+    public void SetKnockbackMultiplier(float value) {
+        this.GetComponentInChildren<KnockbackController>().multiplier = value;
+    }
+
+    
+    public void SetDamageMultiplier(float value) {
+        this.GetComponentInChildren<DamageController>().multiplier = value;
+    }
+
 
 }
