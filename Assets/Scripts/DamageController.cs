@@ -9,6 +9,11 @@ public class DamageController : MonoBehaviour
     public float randMinMultiplier = 0.9f;
     public float randMaxMultiplier = 1.1f;
 
+    void Start()
+    {
+        GetComponent<WeaponCollision>().OnWeaponCollision += DamageEnemy;
+    }
+
     public void DecreaseBaseHit(int amt) {
         baseHit -= amt;
     }
@@ -19,5 +24,10 @@ public class DamageController : MonoBehaviour
 
     public int GetDamage() {
         return (int)Mathf.Floor(baseHit * multiplier * Random.Range(randMinMultiplier, randMaxMultiplier));
+    }
+
+    private void DamageEnemy(object sender, WeaponCollisionEventArgs args) 
+    {
+        args.Target.GetComponent<HealthController>().DecreaseCurrentHealth(GetDamage());        
     }
 }

@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class KnockbackController : MonoBehaviour
 {
-    public float knockback = 1f;
+    // Start is called before the first frame update
+    public Transform weaponHolder;
 
-    public float multiplier = 1f;
+    public float x;
+    public float y;
+    public float z;
 
 
-    public void IncreaseKnockback(float increaseBy) {
-        knockback += increaseBy;
+    void Start()
+    {
+        GetComponent<WeaponCollision>().OnWeaponCollision += TakeKnockback;
     }
 
-    public void DecreaseKnockback(float decreaseBy) {
-        knockback -= decreaseBy;
-    }
-
-    public float GetKnockback() {
-        return knockback * multiplier;
+    // Update is called once per frame
+    private void TakeKnockback(object sender, WeaponCollisionEventArgs args) 
+    {
+        Vector3 dir = weaponHolder.position - args.Target.position;
+        dir = -dir.normalized;
+        //dir.y = 100f;
+        Debug.Log(dir.y);
+        args.Target.GetComponent<Rigidbody>().AddForce(Vector3.Scale(dir,new Vector3(x, y ,z)), ForceMode.VelocityChange);
     }
 }

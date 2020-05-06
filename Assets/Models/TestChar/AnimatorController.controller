@@ -151,7 +151,7 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: -8209947802268989744}
-    m_Position: {x: -100, y: 440, z: 0}
+    m_Position: {x: -80, y: 440, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
@@ -406,6 +406,21 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-280794801375889210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9dfd07d5009d364d80d36b0ed0cf1a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmgController: {fileID: 0}
+  damageMultiplier: 0
+  originalMultiplier: 0
 --- !u!1102 &-28740740495194862
 AnimatorState:
   serializedVersion: 5

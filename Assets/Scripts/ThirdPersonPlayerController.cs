@@ -12,7 +12,9 @@ public class ThirdPersonPlayerController : MonoBehaviour
     private float ver = 0f;
     private bool lockMovement = false;
 
-    //Using this as temp solution as animation behaviours are acting weird
+    //Temporary will be dynamically found based on closest distance to player later
+    public Transform lookAt;
+
     private string[] movementRestrictedAnims = {"Right Slash", "Left Slash", "Lower Slash", "Blocking", "Dodging", "High Slash" };
 
     public float turnTime = 30f;
@@ -25,21 +27,22 @@ public class ThirdPersonPlayerController : MonoBehaviour
     }
 
 
-    private void Update() {
+    private void Update() {        
         movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0.0F, Input.GetAxisRaw("Vertical"));
         hor = movement.x;
         ver = movement.z;
         anim.SetBool("Running", (hor != 0 || ver != 0));
-        //anim.SetBool("Running", Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D));
-
+        
         if(Input.GetKeyDown(KeyCode.E)) {
             anim.SetTrigger("isDodgingOrBlocking");
         }
 
         if(Input.GetMouseButtonDown(0)) {
+            Vector3 ToFace = lookAt.position;
+            ToFace.y = transform.position.y;
+            transform.LookAt(ToFace);
             anim.SetTrigger("isAttacking");
         }
-
         lockMovement = shouldLock();
     }
 
@@ -57,11 +60,10 @@ public class ThirdPersonPlayerController : MonoBehaviour
         Quaternion facingAngle = Quaternion.LookRotation(movement);
         facingAngle.x = 0;
         facingAngle.z = 0;
-        transform.rotation = Quaternion.Lerp(transform.rotation, facingAngle, turnTime * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, facingAngle, turnTime * Time.deltaTime);
         rb.MovePosition(transform.position + (movement * speed * Time.deltaTime));
-        //rb.AddForce(movement * speed, ForceMode.Impulse);
     }
-
+    
     private bool shouldLock() {
         foreach(string s in movementRestrictedAnims) {
             if(anim.GetCurrentAnimatorStateInfo(0).IsName(s)) {

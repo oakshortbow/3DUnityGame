@@ -5,24 +5,52 @@ using UnityEngine;
 public class AnimationEventScript : MonoBehaviour
 {
     public GameObject weapon;
+    private Rigidbody rb;
+    private BoxCollider bc;
+    private Animator anim;
 
-    public void MoveIntoSwordSwing(float speed) {
-        Rigidbody rb = this.GetComponent<Rigidbody>();
+    private void Start() {
+        rb = this.GetComponent<Rigidbody>();
+        bc = weapon.GetComponent<BoxCollider>();
+        anim = this.GetComponent<Animator>();
+    }
+
+    public void MoveIntoSwordSwing(float speed) 
+    {
+        //Rigidbody rb = this.GetComponent<Rigidbody>();
         rb.AddForce(transform.forward * speed, ForceMode.Impulse);
     }
 
-    public void ToggleCollider() {
-        BoxCollider c = weapon.GetComponent<BoxCollider>();
-        c.enabled = !c.enabled;
+    public void ToggleCollider() 
+    {
+        //BoxCollider bc = weapon.GetComponent<BoxCollider>();
+        bc.enabled = !bc.enabled;
     }
 
-    public void SetKnockbackMultiplier(float value) {
-        this.GetComponentInChildren<KnockbackController>().multiplier = value;
+    public void SetKnockbackX(float val) 
+    {
+        this.GetComponentInChildren<KnockbackController>().x= val;
+    }
+
+    public void SetKnockbackY(float val) 
+    {
+
+        this.GetComponentInChildren<KnockbackController>().y= val;
+    }
+
+    public void SetKnockbackZ(float val) 
+    {
+        this.GetComponentInChildren<KnockbackController>().z = val;
     }
 
     
-    public void SetDamageMultiplier(float value) {
+    public void SetDamageMultiplier(float value) 
+    {
         this.GetComponentInChildren<DamageController>().multiplier = value;
+    }
+
+    public void SetAnimSpeed(float speed) {
+        anim.speed = speed;
     }
 
 

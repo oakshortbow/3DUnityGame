@@ -8,10 +8,6 @@ public class WeaponCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {      
-        if(OnWeaponCollision != null)
-        {
-            //Last Arg is Knockback
-            OnWeaponCollision.Invoke(this, new WeaponCollisionEventArgs(other.transform, GetComponent<DamageController>().GetDamage(), GetComponent<KnockbackController>().GetKnockback()));
-        }
+        OnWeaponCollision?.Invoke(this, new WeaponCollisionEventArgs(other.transform));       
     }
 }
