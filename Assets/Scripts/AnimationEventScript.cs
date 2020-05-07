@@ -1,10 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class AnimationEventScript : MonoBehaviour
 {
-    public GameObject weapon;
+    [SerializeField]
+    private GameObject weapon;
+    [SerializeField]
+    private float blinkDistance = 10f;
+    [SerializeField]
+    private float blinkTime = 1f;
+
     private Rigidbody rb;
     private BoxCollider bc;
     private Animator anim;
@@ -15,15 +22,15 @@ public class AnimationEventScript : MonoBehaviour
         anim = this.GetComponent<Animator>();
     }
 
+
+        
     public void MoveIntoSwordSwing(float speed) 
     {
-        //Rigidbody rb = this.GetComponent<Rigidbody>();
         rb.AddForce(transform.forward * speed, ForceMode.Impulse);
     }
 
     public void ToggleCollider() 
     {
-        //BoxCollider bc = weapon.GetComponent<BoxCollider>();
         bc.enabled = !bc.enabled;
     }
 
@@ -42,8 +49,7 @@ public class AnimationEventScript : MonoBehaviour
     {
         this.GetComponentInChildren<KnockbackController>().z = val;
     }
-
-    
+   
     public void SetDamageMultiplier(float value) 
     {
         this.GetComponentInChildren<DamageController>().multiplier = value;
@@ -52,6 +58,4 @@ public class AnimationEventScript : MonoBehaviour
     public void SetAnimSpeed(float speed) {
         anim.speed = speed;
     }
-
-
 }
