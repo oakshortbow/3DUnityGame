@@ -7,7 +7,7 @@ public class AnimationController : MonoBehaviour
 {
 
     private Animator anim;
-    private string[] movementRestrictedAnims = {"Right Slash", "Left Slash", "Lower Slash", "Blocking", "Dodging", "High Slash" };
+    private string[] movementRestrictedAnims = {"Right Slash", "Left Slash", "Lower Slash", "Blocking", "Dodging", "High Slash", "Blink" };
 
     public event EventHandler<LockMovementEventArgs> OnLockedAnimationEncountered;
     private bool lastAnimationStatus;
@@ -44,5 +44,9 @@ public class AnimationController : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void SetAnimSpeed(float speed) {
+        anim.speed = speed;
     }
 }

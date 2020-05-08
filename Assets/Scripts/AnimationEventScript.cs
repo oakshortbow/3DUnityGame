@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 
 public class AnimationEventScript : MonoBehaviour
 {
     [SerializeField]
     private GameObject weapon;
-    [SerializeField]
-    private float blinkDistance = 10f;
-    [SerializeField]
-    private float blinkTime = 1f;
 
     private Rigidbody rb;
     private BoxCollider bc;
@@ -53,9 +48,5 @@ public class AnimationEventScript : MonoBehaviour
     public void SetDamageMultiplier(float value) 
     {
         this.GetComponentInChildren<DamageController>().multiplier = value;
-    }
-
-    public void SetAnimSpeed(float speed) {
-        anim.speed = speed;
     }
 }

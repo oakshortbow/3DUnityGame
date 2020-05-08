@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ThirdPersonPlayerController : MonoBehaviour
 {
@@ -9,19 +10,28 @@ public class ThirdPersonPlayerController : MonoBehaviour
     [SerializeField]
     private float turnTime = 100f;
 
+    [SerializeField]
+    private float dodgeDistance = 8.0f;
+    [SerializeField]
+    private float dodgeTime = 0.5f;
+
     private Rigidbody rb;
     private Vector3 movement;
-    private Animator anim;
-
-    private float hor = 0f;
-    private float ver = 0f;
     private bool lockMovement = false;
+
+    private List<GameObject> clones = new List<GameObject>();
+    private int cloneCount = 0;
 
     // Start is called before the first frame update
     private void Start()
     {
         rb = this.GetComponent<Rigidbody>();
-        GetComponent<AnimationController>().OnLockedAnimationEncountered += SetLockMovement;
+        GetComponent<AnimationController>().OnLockedAnimationEncountered += ToggledLockMovement;
+    }
+
+    private void OnDestroy()
+    {
+         GetComponent<AnimationController>().OnLockedAnimationEncountered -= ToggledLockMovement;
     }
 
 
@@ -31,8 +41,6 @@ public class ThirdPersonPlayerController : MonoBehaviour
         } 
 
         movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0.0F, Input.GetAxisRaw("Vertical"));
-        hor = movement.x;
-        ver = movement.z;
     }
 
     // Update is called once per frame
@@ -41,8 +49,8 @@ public class ThirdPersonPlayerController : MonoBehaviour
         if(lockMovement) {
             return;
         } 
-        
-        if(hor != 0 || ver != 0) {
+
+        if(movement.x != 0 || movement.z != 0) {
             moveCharacter(movement);
         }
     }
@@ -58,9 +66,52 @@ public class ThirdPersonPlayerController : MonoBehaviour
     }
     
 
-    private void SetLockMovement(object sender, LockMovementEventArgs args) {
+    private void ToggledLockMovement(object sender, LockMovementEventArgs args) {
         if(lockMovement != args.LockMovement) {
             lockMovement = args.LockMovement;
         }
+    }
+
+    private void Blink() {
+        this.GetComponent<BoxCollider>().enabled = false;
+        this.GetComponent<Rigidbody>().useGravity = false;
+
+
+
+        this.transform.localScale = Vector3.zero;
+
+        rb.DOMove(transform.position + transform.forward * dodgeDistance, dodgeTime).SetUpdate(UpdateType.Fixed, true).OnUpdate(ClonePlayer).OnComplete(FinishBlink);
+    }
+
+
+    private void ClonePlayer() {
+        if(clones.Count < 25) {
+            GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
+            clones.Add(clone);
+            clone.transform.localScale = new Vector3(1, 1, 1);
+            Destroy(clone.GetComponent<ThirdPersonPlayerController>());
+            Destroy(clone.GetComponent<Animator>());
+            Destroy(clone.GetComponent<BoxCollider>());
+            Destroy(clone.GetComponent<Rigidbody>());
+            Destroy(clone.GetComponent<AnimationController>());
+            return;
+        }
+        int cloneIndex = cloneCount++;
+        clones[cloneIndex].transform.position = this.transform.position;
+        clones[cloneIndex].transform.rotation = this.transform.rotation;
+        clones[cloneIndex].SetActive(true);
+
+    }
+
+    private void FinishBlink() {
+        this.transform.localScale = new Vector3(1, 1, 1);
+        this.GetComponent<BoxCollider>().enabled = true;
+        this.GetComponent<Rigidbody>().useGravity = true;
+        foreach(GameObject clone in clones) {
+            clone.SetActive(false);
+            //clones.Remove(clone);
+        }
+        Debug.Log(clones.Count);
+        cloneCount = 0;
     }
 }
