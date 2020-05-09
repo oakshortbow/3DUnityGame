@@ -15,6 +15,9 @@ public class ThirdPersonPlayerController : MonoBehaviour
     [SerializeField]
     private float dodgeTime = 0.5f;
 
+    [SerializeField]
+    private Material cloneMaterial;
+
     private Rigidbody rb;
     private Vector3 movement;
     private bool lockMovement = false;
@@ -22,8 +25,9 @@ public class ThirdPersonPlayerController : MonoBehaviour
     private List<GameObject> clones = new List<GameObject>();
     private int cloneCount = 0;
     private int renderClone = 0;
+    private int cloneLoopTicks = 0;
 
-    private const int MAX_CLONES = 25;
+    private const int MAX_CLONES = 3;
 
     // Start is called before the first frame update
     private void Start()
@@ -84,26 +88,43 @@ public class ThirdPersonPlayerController : MonoBehaviour
 
 
     private void ClonePlayer() {
-        if(clones.Count < 3) {
+        if(cloneLoopTicks <= 4) {
+            cloneLoopTicks++;
+            return;
+        }
+
+        cloneLoopTicks = 0;   
+        if(clones.Count < MAX_CLONES) {
             GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
             clones.Add(clone);
             clone.transform.localScale = new Vector3(1, 1, 1);
-            Destroy(clone.GetComponent<ThirdPersonPlayerController>());
-            Destroy(clone.GetComponent<Animator>());
             Destroy(clone.GetComponent<BoxCollider>());
             Destroy(clone.GetComponent<Rigidbody>());
+            Destroy(clone.GetComponent<ThirdPersonPlayerController>());
+            Destroy(clone.GetComponent<Animator>());
             Destroy(clone.GetComponent<AnimationController>());  
-            SkinnedMeshRenderer[] skinMeshList = clone.GetComponentsInChildren<SkinnedMeshRenderer>();
-            foreach (SkinnedMeshRenderer smr in skinMeshList)
+            Renderer[] skinMeshList = clone.GetComponentsInChildren<Renderer>();
+            Material[] swordMaterials = new Material[] {cloneMaterial, cloneMaterial, cloneMaterial};
+            foreach (Renderer r in skinMeshList)
             {
-                smr.material.DOFloat(2, "_AlphaThreshold", 5f);
+                if(r.materials.Length == 3) 
+                {
+                   r.materials = swordMaterials;     
+                }
+                else 
+                {
+                    r.material = cloneMaterial;
+                }
             }
             return;       
         }
-        int cloneIndex = cloneCount++;
-        clones[cloneIndex].transform.position = this.transform.position;
-        clones[cloneIndex].transform.rotation = this.transform.rotation;
-        clones[cloneIndex].SetActive(true);
+        int cloneIndex = cloneCount;
+        if(cloneIndex < MAX_CLONES) {
+            clones[cloneIndex].transform.position = this.transform.position;
+            clones[cloneIndex].transform.rotation = this.transform.rotation;
+            clones[cloneIndex].SetActive(true);
+            cloneCount++;
+        }
 
     }
 
