@@ -2,13 +2,13 @@
      Properties {
          _Color ("Color", Color) = (1,1,1,1)
          _Size ("Atmosphere Size Multiplier", Range(0,16)) = 4
-         _Rim ("Fade Power", Range(0,100)) = 4
+         _Fade ("Fade Power", Range(0, 1)) = 0.5
          _Light ("Lighting Power", Range(0,10)) = 1.4
          _Ambient ("Ambient Power", Range (0,6)) = 0.8		
      }
 
      SubShader {
-         Tags { "RenderType"="Transparent" }
+         Tags { "RenderType"="Transparent" "ForceNoShadowCasting" = "True" }
          LOD 200
  
          Cull Front
@@ -27,7 +27,7 @@
          };
  
          half _Size;
-         half _Rim;
+	 half _Fade;
          half _Light;
          half _Ambient;
          fixed4 _Color;
@@ -49,12 +49,11 @@
          }
  
          void surf (Input IN, inout SurfaceOutput o) {
-             half rim = saturate (dot (normalize (IN.viewDir), o.Normal));
  
              // Albedo comes from a texture tinted by color
              fixed4 c = _Color;
              o.Albedo = c.rgb;
-             o.Alpha = lerp (0, 1, pow (rim, _Rim));
+	     o.Alpha = _Fade;
          }
          ENDCG
      }
