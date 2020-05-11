@@ -29,22 +29,6 @@ public class AnimationEventScript : MonoBehaviour
         bc.enabled = !bc.enabled;
     }
 
-    public void SetKnockbackX(float val) 
-    {
-        this.GetComponentInChildren<KnockbackController>().x= val;
-    }
-
-    public void SetKnockbackY(float val) 
-    {
-
-        this.GetComponentInChildren<KnockbackController>().y= val;
-    }
-
-    public void SetKnockbackZ(float val) 
-    {
-        this.GetComponentInChildren<KnockbackController>().z = val;
-    }
-   
     public void SetDamageMultiplier(float value) 
     {
         this.GetComponentInChildren<DamageController>().multiplier = value;

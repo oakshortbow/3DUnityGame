@@ -19,16 +19,18 @@ public class ThirdPersonPlayerController : MonoBehaviour
     private Material cloneMaterial;
 
     private Rigidbody rb;
+    private Renderer[] renderers;
     private Vector3 movement;
     private bool lockMovement = false;
     private int cloneLoopTicks = 0;
 
-    private List<Tweener> colorShiftTween = new List<Tweener>();
+    Sequence colourChangeSequence;
 
 
     // Start is called before the first frame update
     private void Start()
     {
+        renderers = this.GetComponentsInChildren<Renderer>();
         rb = this.GetComponent<Rigidbody>();
         GetComponent<AnimationController>().OnLockedAnimationEncountered += ToggledLockMovement;
     }
@@ -78,33 +80,26 @@ public class ThirdPersonPlayerController : MonoBehaviour
 
     private void Blink() 
     {
-        foreach(Tweener t in colorShiftTween) {
-            t.Kill(true);
-        }
+        colourChangeSequence?.Kill(true);
+
         SetMaterialColour(100f);
-        this.GetComponent<BoxCollider>().enabled = false;
+        //this.GetComponent<BoxCollider>().enabled = false;
         this.GetComponent<Rigidbody>().useGravity = false;
-        this.transform.localScale = Vector3.zero;
+        //this.transform.localScale = Vector3.zero;
         rb.DOMove(transform.position + transform.forward * dodgeDistance, dodgeTime).SetUpdate(UpdateType.Fixed, true).OnUpdate(ClonePlayer).OnComplete(FinishBlink);
     }
 
 
     public void SetMaterialColour(float val) {
-        colorShiftTween.Clear();
-        foreach(Renderer r in this.GetComponentsInChildren<Renderer>()) 
+        foreach(Renderer r in renderers) 
         {
-            if(r.material.HasProperty("_Offset")) 
-            {
-                if(val < 100) {
-                    colorShiftTween.Add(r.material.DOFloat(val, "_Offset", 2.5f));
-                }
-                else 
-                {
-                    r.material.SetFloat("_Offset", val);
-                }
-            }                
+            foreach(Material m in r.materials) {
+                if(m.HasProperty("_Offset")) 
+                {              
+                    m.SetFloat("_Offset", val);              
+                }  
+            }
         }
-
     }
 
     private void ClonePlayer() {
@@ -116,9 +111,8 @@ public class ThirdPersonPlayerController : MonoBehaviour
         cloneLoopTicks = 0;
 
         GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
-        clone.transform.localScale = new Vector3(1, 1, 1);
-        Destroy(clone.GetComponent<BoxCollider>());
-        Destroy(clone.GetComponent<Rigidbody>());
+        //clone.transform.localScale = new Vector3(1, 1, 1);
+        clone.GetComponent<BoxCollider>().enabled = false;
         Destroy(clone.GetComponent<ThirdPersonPlayerController>());
         Destroy(clone.GetComponent<Animator>());
         Destroy(clone.GetComponent<AnimationController>());  
@@ -147,9 +141,20 @@ public class ThirdPersonPlayerController : MonoBehaviour
 
     private void FinishBlink() 
     {
-        this.transform.localScale = new Vector3(1, 1, 1);
+        int index = 0;
+        bool append = true;
+        //this.transform.localScale = new Vector3(1, 1, 1);
         this.GetComponent<BoxCollider>().enabled = true;
         this.GetComponent<Rigidbody>().useGravity = true;
-        SetMaterialColour(0f);
+        colourChangeSequence = DOTween.Sequence();
+        foreach(Renderer r in renderers) {
+            foreach(Material m in r.materials) {
+                 if(m.HasProperty("_Offset")) 
+                 {
+                        colourChangeSequence.Join(m.DOFloat(0, "_Offset", 1f));          
+                 }
+            }
+        }
+        colourChangeSequence.PrependInterval(0.5f);
     }
 }

@@ -5,9 +5,6 @@ using DG.Tweening;
 
 public class DissolveClones : MonoBehaviour
 {
-    [SerializeField]
-    private int resetValue = 3;
-
     private Renderer[] renders;
     private List<Material> materialList = new List<Material>();
     // Start is called before the first frame update
@@ -26,6 +23,5 @@ public class DissolveClones : MonoBehaviour
         {
             m.DOFloat(0.0F, "_Fade", 0.5f).OnComplete(()=> Destroy(gameObject));
         }
-
     }
 }

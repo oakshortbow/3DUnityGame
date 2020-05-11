@@ -9,10 +9,17 @@ public class DamageController : MonoBehaviour
     public float randMinMultiplier = 0.9f;
     public float randMaxMultiplier = 1.1f;
 
-    void Start()
+
+    private void Start()
     {
         GetComponent<WeaponCollision>().OnWeaponCollision += DamageEnemy;
     }
+
+    private void OnDestroy()
+    {
+        GetComponent<WeaponCollision>().OnWeaponCollision -= DamageEnemy;
+    }
+
 
     public void DecreaseBaseHit(int amt) {
         baseHit -= amt;

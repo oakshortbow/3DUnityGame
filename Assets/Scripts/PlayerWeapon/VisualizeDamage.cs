@@ -9,12 +9,18 @@ public class VisualizeDamage : MonoBehaviour
     private DamageController dmgController;
     private Camera mainCamera;
 
-    void Start()
+    private void Start()
     {
         GetComponent<WeaponCollision>().OnWeaponCollision += VisualizeDamageNumbers;
         dmgController = GetComponent<DamageController>();
         mainCamera = Camera.main;
     }
+
+    private void OnDestroy()
+    {
+        GetComponent<WeaponCollision>().OnWeaponCollision -= VisualizeDamageNumbers;
+    }
+
 
     private void VisualizeDamageNumbers(object sender, WeaponCollisionEventArgs args) 
     {
